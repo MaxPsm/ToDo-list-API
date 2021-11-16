@@ -5,6 +5,7 @@ import models.ToDo
 import daos.ToDoDAO
 import scala.concurrent.Future
 
+
 class TodoService @Inject() (items: ToDoDAO) {
 
   def addItem(item: ToDo): Future[String] = {
