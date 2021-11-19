@@ -16,7 +16,7 @@ libraryDependencies += "io.sentry" % "sentry" % "5.4.0"
 libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
 libraryDependencies += "io.sentry" % "sentry-logback" % "5.4.0"
 libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
-
+libraryDependencies += "org.mockito" % "mockito-scala_2.13" % "1.16.3" % "test"
 // Adds additional packages into Twirl
 //TwirlKeys.templateImports += "com.example.controllers._"
 

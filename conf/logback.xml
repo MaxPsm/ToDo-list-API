@@ -1,10 +1,6 @@
 <!-- https://www.playframework.com/documentation/latest/SettingsLogger -->
 <configuration>
 
-<!--  <define name="sentryUri" class="io.kinoplan.service.inner.utils.ConfigPropertyDefiner">-->
-<!--    <path>https://3e0cf5f4808543c78f7b983210b426d1@sentry.kinoplan.tk/60</path>-->
-<!--  </define>-->
-
   <conversionRule conversionWord="coloredLevel" converterClass="play.api.libs.logback.ColoredLevel" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -35,15 +31,6 @@
     <appender-ref ref="STDOUT" />
   </appender>
 
-<!--  <appender name="SENTRY" class="io.sentry.logback.SentryAppender">-->
-<!--    <options>-->
-<!--      <dsn>${sentryUri}</dsn>-->
-<!--    </options>-->
-<!--    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
-<!--      <level>ERROR</level>-->
-<!--    </filter>-->
-<!--  </appender>-->
-
   <appender name="Sentry" class="io.sentry.logback.SentryAppender">
     <options>
       <dsn>https://3e0cf5f4808543c78f7b983210b426d1:fb9fa7a5a6344f3c95203f9d7e274bb0@sentry.kinoplan.tk/60</dsn>
@@ -52,7 +39,6 @@
 
   <logger name="play" level="INFO" />
   <logger name="application" level="DEBUG" />
-<!--  <logger name ="addLogger" level = "ERROR" />-->
 
   <root level="WARN">
     <appender-ref ref="ASYNCFILE" />
@@ -62,11 +48,5 @@
   <root level="ERROR">
     <appender-ref ref="Sentry"/>
   </root>
-
-  <!--  -->
-<!--  <logger name="play" level="ERROR">-->
-<!--    <appender-ref ref="Sentry" />-->
-<!--  </logger>-->
-
 
 </configuration>

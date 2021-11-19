@@ -5,7 +5,7 @@
 CREATE TABLE todo (
     id int not null auto_increment,
     name varchar(90) not null,
-    isComplete boolean,
+    is_complete boolean,
     PRIMARY KEY (id)
 );
 

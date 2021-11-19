@@ -2,21 +2,16 @@ package controllers
 
 import javax.inject._
 
-import play.api.mvc._
-import play.api.libs.json._
+import scala.concurrent.ExecutionContext
+
 import models.{ToDo, TodoFormData}
+import play.api.libs.json._
+import play.api.mvc._
 import services.TodoService
-import scala.concurrent.ExecutionContext.Implicits.global
 
-import ch.qos.logback.classic.Logger
-
-
-
-@Singleton
 class ToDoController @Inject()(
-  cc: ControllerComponents,
   todoService: TodoService
-) extends AbstractController(cc) {
+)(implicit val ex: ExecutionContext) extends InjectedController {
 
   def getAll() = Action.async { implicit request: Request[AnyContent] =>
     todoService.listAllItems.map(items =>
@@ -30,26 +25,32 @@ class ToDoController @Inject()(
 
   def add() = Action.async(parse.json[TodoFormData]) { implicit request: Request[TodoFormData] =>
     val newTodoItem = ToDo(0, request.body.name, request.body.isComplete)
-    todoService.addItem(newTodoItem).map(_ => Redirect(routes.ToDoController.getAll))
+    todoService.addItem(newTodoItem).map(item =>
+      Ok(Json.toJson(item)))
   }
 
   def update(id: Long) = Action.async(parse.json[TodoFormData]) { implicit request: Request[TodoFormData] =>
     val todoItem = ToDo(id, request.body.name, request.body.isComplete)
-    todoService.updateItem(todoItem).map(_ => Redirect(routes.ToDoController.getAll))
+    todoService.updateItem(todoItem).map(item =>
+      Ok(Json.toJson(item)))
   }
 
   def delete(id: Long) = Action.async { implicit request: Request[AnyContent] =>
-    todoService.deleteItem(id).map( _ => Redirect(routes.ToDoController.getAll))
+    todoService.deleteItem(id).map(item =>
+      Ok(Json.toJson(item)))
   }
 
   def markComplete(id: Long, isComplete:Boolean) = Action.async { implicit request: Request[AnyContent] =>
-    todoService.markIsCompleteItem(id,isComplete).map(_ => Redirect(routes.ToDoController.getAll))
+    todoService.markIsCompleteItem(id,isComplete).map(item =>
+      Ok(Json.toJson(item)))
   }
 
   def markToDos(isComplete: Boolean) = Action.async{implicit request: Request[AnyContent] =>
-    todoService.markedIsCompleteAllItems(isComplete).map(_ => Redirect(routes.ToDoController.getAll))}
+    todoService.markedIsCompleteAllItems(isComplete).map(item =>
+      Ok(Json.toJson(item)))}
 
   def deleteCompleted = Action.async { implicit request: Request[AnyContent] =>
-    todoService.deleteCompletedItems.map(_ => Redirect(routes.ToDoController.getAll))
+    todoService.deleteCompletedItems.map(item =>
+      Ok(Json.toJson(item)))
   }
 }

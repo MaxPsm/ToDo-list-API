@@ -1,9 +1,10 @@
 package services
 
-import com.google.inject.Inject
-import models.ToDo
-import daos.ToDoDAO
 import scala.concurrent.Future
+
+import com.google.inject.Inject
+import daos.ToDoDAO
+import models.ToDo
 
 
 class TodoService @Inject() (items: ToDoDAO) {

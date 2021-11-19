@@ -4,13 +4,21 @@
 # ~~~~
 
 # api controllers mapping
-GET     /todos                  controllers.ToDoController.getAll
++ nocsrf
+GET     /todos                  controllers.ToDoController.getAll()
++ nocsrf
 GET     /todos/:id                  controllers.ToDoController.getById(id: Long)
-POST    /todos/add              controllers.ToDoController.add
++ nocsrf
+POST    /todos/add              controllers.ToDoController.add()
++ nocsrf
 PUT     /todos/update/:id           controllers.ToDoController.update(id: Long)
++ nocsrf
 DELETE /todos/delete/:id         controllers.ToDoController.delete(id: Long)
-PUT     /todos/mark/complete/:id controllers.ToDoController.markComplete(id: Long, isComplete: Boolean)
-PUT     /todos/mark/all controllers.ToDoController.markToDos(isComplete: Boolean)
++ nocsrf
+PUT     /todos/mark/complete/:id controllers.ToDoController.markComplete(id: Long, is_complete: Boolean)
++ nocsrf
+PUT     /todos/mark/all controllers.ToDoController.markToDos(is_complete: Boolean)
++ nocsrf
 DELETE /todos/deleteCompleted        controllers.ToDoController.deleteCompleted
 
 
