@@ -7,18 +7,15 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.13.6"
 
-libraryDependencies += guice
-libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test
-libraryDependencies += "mysql" % "mysql-connector-java" % "8.0.26"
-libraryDependencies += "com.typesafe.play" %% "play-slick" % "5.0.0"
-libraryDependencies += "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0"
-libraryDependencies += "io.sentry" % "sentry" % "5.4.0"
-libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
-libraryDependencies += "io.sentry" % "sentry-logback" % "5.4.0"
-libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2"
-libraryDependencies += "org.mockito" % "mockito-scala_2.13" % "1.16.3" % "test"
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.example.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
+libraryDependencies ++= Seq(
+  guice,
+  "org.scalatestplus.play" %% "scalatestplus-play" % "5.0.0" % Test,
+  "mysql" % "mysql-connector-java" % "8.0.26",
+  "com.typesafe.play" %% "play-slick" % "5.0.0",
+  "com.typesafe.play" %% "play-slick-evolutions" % "5.0.0",
+  "io.sentry" % "sentry" % "5.4.0",
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "io.sentry" % "sentry-logback" % "5.4.0",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
+  "org.mockito" % "mockito-scala_2.13" % "1.16.3" % "test"
+)

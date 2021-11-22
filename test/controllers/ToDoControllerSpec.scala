@@ -9,7 +9,7 @@ import org.mockito.MockitoSugar
 import org.scalatest.MustMatchers
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.test._
@@ -31,11 +31,25 @@ class ToDoControllerSpec extends PlaySpec
 
     "get should be valid" in {
       val req = FakeRequest(GET, "/todos")
-      when( mockedService.listAllItems ).thenReturn(Future(Nil))
+      val toDo = ToDo(0, "todo task", isComplete = false)
+      when(mockedService.listAllItems).thenReturn(Future(Seq(toDo)))
 
       val result: Future[Result] = controller.getAll().apply(req)
       status(result) mustBe OK
-      contentAsJson(result) mustBe Json.toJson(Seq[ToDo]())
+      contentAsJson(result) mustBe JsArray.apply(Seq(Json.obj(
+        "id" -> 0,
+        "name" -> "todo task",
+        "is_complete" -> false
+      )))
+    }
+
+    "get should not be valid" in {
+      val req = FakeRequest(GET, "/todos")
+      when(mockedService.listAllItems).thenReturn(Future.failed(new Throwable("error")))
+
+      val result: Future[Result] = controller.getAll().apply(req)
+      status(result) mustBe ServiceUnavailable.header.status
+      //contentAsJson(result) mustBe Json.obj()
     }
 
     "update should be valid" in {
@@ -45,9 +59,9 @@ class ToDoControllerSpec extends PlaySpec
         .withHeaders(CONTENT_TYPE -> JSON)
         .withBody(Json.toJson(sessionTask))
 
-        when( mockedService.updateItem(any[ToDo]) ).thenReturn(Future(reqID))
-        val method = call(controller.update(reqID), request)
-        status(method) mustBe OK
+      when(mockedService.updateItem(any[ToDo])).thenReturn(Future(reqID))
+      val method = call(controller.update(reqID), request)
+      status(method) mustBe OK
     }
 
     "delete should be valid" in {
@@ -58,7 +72,7 @@ class ToDoControllerSpec extends PlaySpec
         override def controllerComponents: ControllerComponents = Helpers.stubControllerComponents()
       }
 
-      when( mockedService.deleteItem(deleteId) ).thenReturn(Future(deleteId))
+      when(mockedService.deleteItem(deleteId)).thenReturn(Future(deleteId))
       val method = controller.delete(deleteId).apply(request)
       status(method) mustBe OK
     }
@@ -70,7 +84,7 @@ class ToDoControllerSpec extends PlaySpec
         .withHeaders(CONTENT_TYPE -> JSON)
         .withBody(Json.toJson(newTask))
 
-      when( mockedService.addItem(any[ToDo]) ).thenReturn(Future("TodoItem successfully added"))
+      when(mockedService.addItem(any[ToDo])).thenReturn(Future("TodoItem successfully added"))
 
       val method = call(controller.add(), request)
 
@@ -82,9 +96,9 @@ class ToDoControllerSpec extends PlaySpec
       val completed = false
       val request = FakeRequest(PUT, s"/todos/mark/complete/$task_id")
 
-      when( mockedService.markIsCompleteItem(task_id,completed) ).thenReturn(Future(task_id))
+      when(mockedService.markIsCompleteItem(task_id, completed)).thenReturn(Future(task_id))
 
-      val method = call(controller.markComplete(task_id,completed), request)
+      val method = call(controller.markComplete(task_id, completed), request)
 
       status(method) mustBe OK
     }
@@ -93,9 +107,9 @@ class ToDoControllerSpec extends PlaySpec
       val completed = false
       val request = FakeRequest(PUT, s"/todos/mark/all")
 
-      when( mockedService.markedIsCompleteAllItems(completed)).thenReturn(Future(1))
+      when(mockedService.markedIsCompleteAllItems(completed)).thenReturn(Future(1))
 
-      val method = call(controller.markToDos(completed),request)
+      val method = call(controller.markToDos(completed), request)
 
       status(method) mustBe OK
     }
@@ -103,9 +117,9 @@ class ToDoControllerSpec extends PlaySpec
     "delete all completed should be valid" in {
       val request = FakeRequest(DELETE, "/todos/deleteCompleted")
 
-      when( mockedService.deleteCompletedItems()).thenReturn(Future[1])
+      when(mockedService.deleteCompletedItems()).thenReturn(Future(1))
 
-      val method = call(controller.deleteCompleted(),request)
+      val method = call(controller.deleteCompleted(), request)
 
       status(method) mustBe OK
     }

@@ -1,34 +1,33 @@
 package daos
 
+import javax.inject.{Inject, Singleton}
+
 import scala.concurrent.{ExecutionContext, Future}
 
-import com.google.inject.Inject
 import models._
 import play.api.Logging
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 import slick.jdbc.MySQLProfile.api._
 
-
+@Singleton
 class ToDoDAO @Inject()(
-                         protected val dbConfigProvider: DatabaseConfigProvider
-                       )(implicit executionContext: ExecutionContext)
+  protected val dbConfigProvider: DatabaseConfigProvider
+)(implicit ec: ExecutionContext)
   extends HasDatabaseConfigProvider[JdbcProfile] with Logging {
 
-  var todoList = TableQuery[TodoTableDef]
-
+  var todoList = TableQuery[ToDoTable]
 
   def add(todoItem: ToDo): Future[String] = {
     db
       .run(todoList += todoItem)
-      .map{res =>
+      .map { _ =>
         "TodoItem successfully added"
       }
       .recover {
-        case ex: Exception => {
+        case ex: Exception =>
           printf(ex.getMessage)
           ex.getMessage
-        }
       }
   }
 
@@ -37,11 +36,11 @@ class ToDoDAO @Inject()(
   }
 
   def update(todoItem: ToDo): Future[Int] = {
-    db
-      .run(todoList.filter(_.id === todoItem.id)
-        .map(x => (x.name, x.isComplete))
+    db.run(
+      todoList.filter(_.id === todoItem.id)
+        .map(item => (item.name, item.isComplete))
         .update(todoItem.name, todoItem.isComplete)
-      )
+    )
   }
 
   def get(id: Long): Future[Option[ToDo]] = {

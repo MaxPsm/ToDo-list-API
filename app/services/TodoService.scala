@@ -1,43 +1,28 @@
 package services
 
+import javax.inject.{Inject, Singleton}
+
 import scala.concurrent.Future
 
-import com.google.inject.Inject
 import daos.ToDoDAO
 import models.ToDo
 
+@Singleton
+class TodoService @Inject()(itemsDAO: ToDoDAO) {
 
-class TodoService @Inject() (items: ToDoDAO) {
+  def listAllItems: Future[Seq[ToDo]] = itemsDAO.listAll
 
-  def addItem(item: ToDo): Future[String] = {
-    items.add(item)
-  }
+  def getItem(id: Long): Future[Option[ToDo]] = itemsDAO.get(id)
 
-  def deleteItem(id: Long): Future[Int] = {
-    items.delete(id)
-  }
+  def addItem(item: ToDo): Future[String] = itemsDAO.add(item)
 
-  def updateItem(item: ToDo): Future[Int] = {
-    items.update(item)
-  }
+  def updateItem(item: ToDo): Future[Int] = itemsDAO.update(item)
 
-  def getItem(id: Long): Future[Option[ToDo]] = {
-    items.get(id)
-  }
+  def markIsCompleteItem(id: Long, isComplete: Boolean): Future[Int] = itemsDAO.markComplete(id, isComplete)
 
-  def listAllItems: Future[Seq[ToDo]] = {
-    items.listAll
-  }
+  def markedIsCompleteAllItems(isComplete: Boolean): Future[Int] = itemsDAO.markCompleteAll(isComplete)
 
-  def markIsCompleteItem(id: Long, isComplete: Boolean): Future[Int] = {
-    items.markComplete(id, isComplete)
-  }
+  def deleteItem(id: Long): Future[Int] = itemsDAO.delete(id)
 
-  def markedIsCompleteAllItems(isComplete: Boolean): Future[Int] = {
-    items.markCompleteAll(isComplete)
-  }
-
-  def deleteCompletedItems(): Future[Int] = {
-    items.deleteCompleted()
-  }
+  def deleteCompletedItems(): Future[Int] = itemsDAO.deleteCompleted()
 }
