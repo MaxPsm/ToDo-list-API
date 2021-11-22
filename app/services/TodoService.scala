@@ -37,7 +37,7 @@ class TodoService @Inject() (items: ToDoDAO) {
     items.markCompleteAll(isComplete)
   }
 
-  def deleteCompletedItems = {
-    items.deleteCompleted
+  def deleteCompletedItems(): Future[Int] = {
+    items.deleteCompleted()
   }
 }

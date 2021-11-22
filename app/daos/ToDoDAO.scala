@@ -56,11 +56,11 @@ class ToDoDAO @Inject()(
     db.run(todoList.filter(_.id === id).map(x => x.isComplete).update(isComplete))
   }
 
-  def markCompleteAll(isComplete: Boolean) = {
+  def markCompleteAll(isComplete: Boolean): Future[Int] = {
     db.run(todoList.map(x => x.isComplete).update(isComplete))
   }
 
-  def deleteCompleted = {
+  def deleteCompleted(): Future[Int] = {
     db.run(todoList.filter(_.isComplete === true).delete)
   }
 

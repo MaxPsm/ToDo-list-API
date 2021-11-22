@@ -38,7 +38,6 @@ class ToDoControllerSpec extends PlaySpec
       contentAsJson(result) mustBe Json.toJson(Seq[ToDo]())
     }
 
-
     "update should be valid" in {
       val reqID = 1
       val sessionTask = ToDo(reqID, "eat", isComplete = false)
@@ -104,9 +103,9 @@ class ToDoControllerSpec extends PlaySpec
     "delete all completed should be valid" in {
       val request = FakeRequest(DELETE, "/todos/deleteCompleted")
 
-      when( mockedService.deleteCompletedItems).thenReturn(Future(1))
+      when( mockedService.deleteCompletedItems()).thenReturn(Future[1])
 
-      val method = call(controller.deleteCompleted,request)
+      val method = call(controller.deleteCompleted(),request)
 
       status(method) mustBe OK
     }
